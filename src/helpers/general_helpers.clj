@@ -28,7 +28,7 @@
 
 (defmacro test-range [tries expr]
   `(let [gend# (sort
-                 (for [n# (range ~tries)] ~expr))
+                 (for [_# (range ~tries)] ~expr))
          low# (first gend#)
          high# (last gend#)]
      [low# high#]))
@@ -115,7 +115,7 @@
   "Times the expression multiple times, returning the total time taken, in ms"
   [times expr]
   `(time-pure
-     (dotimes [n# ~times]
+     (dotimes [_# ~times]
       ~expr)))
 
 (defmacro time-multiple-avg
@@ -174,7 +174,7 @@
 (defn test-perc [num-of-tests pred f]
   (double
       (/
-        (reduce (fn [acc test-n]
+        (reduce (fn [acc _]
                   (if (pred (f))
                     (inc acc)
                     acc))
@@ -315,3 +315,37 @@
       overflown? []
 
       :else (assoc current-permutation last-i (inc-f current-ones)))))
+
+(defn thread*
+  "Runs f in a new thread."
+  [^Runnable f] ^Thread
+  (doto (Thread. f)
+    (.start)))
+
+(defmacro thread
+  "Runs the body in a new thread."
+  [& body]
+  `(thread*
+     (fn [] ~@body)))
+
+(defn timeout*
+  "Wait for timeout-t many milliseconds for f to finish.
+  Returns default if it times out."
+  [timeout-t default f]
+  (let [fut (future (f))
+        cur-time current-ms-timestamp
+        start-t (cur-time)
+        sleep-t (/ timeout-t 10)]
+    (loop []
+      (Thread/sleep sleep-t)
+      (if (>= (- (cur-time) start-t) timeout-t)
+        default
+        (if (realized? fut)
+          @fut
+          (recur))))))
+
+(defmacro timeout
+  "Wait for timeout-t many milliseconds for the body to finish.
+  Returns default if it times out."
+  [t default & body]
+  `(timeout* ~t ~default (fn [] ~@body)))

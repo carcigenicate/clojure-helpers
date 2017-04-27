@@ -203,6 +203,12 @@
       (> n max) (dec (+ min (rem (- n max) r)))
       :else n)))
 
+(defn map-range [value start1 stop1 start2 stop2]
+  (+ start2
+     (* (- stop2 start2)
+        (/ (- value start1)
+           (- stop1 start1)))))
+
 (defn parse-int
   "Returns nil on bad input"
   [str-n]

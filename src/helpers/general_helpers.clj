@@ -1,6 +1,7 @@
 (ns helpers.general-helpers
   (:require [criterium.core :as c])
-  (:import [java.util Random Collections Collection])
+  (:import [java.util Random Collections Collection]
+           [java.math RoundingMode MathContext])
   (:refer-clojure :exclude [shuffle]))
 
 (defn update-with [m k k1->k2]
@@ -204,10 +205,11 @@
       :else n)))
 
 (defn map-range [value start1 stop1 start2 stop2]
-  (+ start2
-     (* (- stop2 start2)
-        (/ (- value start1)
-           (- stop1 start1)))))
+  (with-precision 100 ; Hack needed for Mandelbrot
+    (+ start2
+       (* (- stop2 start2)
+          (/ (- value start1)
+             (- stop1 start1))))))
 
 (defn parse-int
   "Returns nil on bad input"

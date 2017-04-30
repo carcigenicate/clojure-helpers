@@ -4,17 +4,6 @@
            [java.math RoundingMode MathContext])
   (:refer-clojure :exclude [shuffle]))
 
-(defn update-with [m k k1->k2]
-  (let [old-val (get m k)]
-    (assoc m k (k1->k2 old-val))))
-
-(defn acc-map [f xs init]
-  (reduce (fn [pair x]
-            (let [[acc ys] pair
-                  [acc' y] (f acc x)
-                  ys' (conj ys y)]
-              [acc' ys'])) [init []]  xs))
-
 (defn abs [^Double n]
   (Math/abs n))
 
@@ -205,11 +194,17 @@
       :else n)))
 
 (defn map-range [value start1 stop1 start2 stop2]
-  (with-precision 100 ; Hack needed for Mandelbrot
-    (+ start2
-       (* (- stop2 start2)
-          (/ (- value start1)
-             (- stop1 start1))))))
+  (+ start2
+     (* (- stop2 start2)
+        (/ (- value start1)
+           (- stop1 start1)))))
+
+(defn point-within-circle? [[x y :as point] [cx cy :as circle-center] circle-radius]
+  (let [x-diff (abs (- x cx))
+        y-diff (abs (- y cy))]
+    (<= (+ (* x-diff x-diff)
+           (* y-diff y-diff))
+        (* circle-radius circle-radius))))
 
 (defn parse-int
   "Returns nil on bad input"

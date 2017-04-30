@@ -199,9 +199,9 @@
         (/ (- value start1)
            (- stop1 start1)))))
 
-(defn point-within-circle? [[x y :as point] [cx cy :as circle-center] circle-radius]
-  (let [x-diff (abs (- x cx))
-        y-diff (abs (- y cy))]
+(defn point-within-circle? [x y circle-center-x circle-center-y circle-radius]
+  (let [x-diff (abs (- x circle-center-x))
+        y-diff (abs (- y circle-center-y))]
     (<= (+ (* x-diff x-diff)
            (* y-diff y-diff))
         (* circle-radius circle-radius))))

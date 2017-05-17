@@ -185,13 +185,24 @@
     (> n max) max
     :else n))
 
-(defn wrap "Returns a number with the given range, wrapped if necessary."
+(defn wrap
+  "WARNING! APPEARS TO BE BROKEN!
+   Returns a number with the given range, wrapped if necessary."
   [n min max]
   (let [r (- max min)]
     (cond
       (< n min) (inc (- max (rem (- min n) r)))
       (> n max) (dec (+ min (rem (- n max) r)))
       :else n)))
+
+(defn unsafe-wrap
+  "Wraps a n so it's between min-n and max-n (inclusive)
+  WARNING!: Breaks if (> n (- max-n min-n))"
+  [n min-n max-n]
+  (cond
+    (< n min-n) (- max-n (- min-n n))
+    (> n max-n) (+ min-n (- n max-n))
+    :else n))
 
 (defn map-range [value start1 stop1 start2 stop2]
   (+ start2

@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [read-line])
 
   (:require [clojure.java.io :as io]
-            [clojure.core.async :refer [go thread >! <! >!! go-loop]])
+            [clojure.core.async :refer [thread <! >!! go-loop]])
 
   (:import [java.io BufferedWriter BufferedReader IOException]
            [java.net Socket ServerSocket]))

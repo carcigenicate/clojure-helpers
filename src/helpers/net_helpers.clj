@@ -44,7 +44,7 @@
   "Opens a socket for the given address and port, and passes it to connect-f.
    Closes the socket."
   [^String address ^long port connect-f]
-  (with-open [server-sock (Socket. address port)]
+  (let [server-sock (Socket. address port)]
     (connect-f server-sock)))
 
 (defn pretty-address

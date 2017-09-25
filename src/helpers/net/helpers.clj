@@ -1,4 +1,4 @@
-(ns helpers.net-helpers
+(ns helpers.net.helpers
   (:refer-clojure :exclude [read-line])
 
   (:require [clojure.java.io :as io]
@@ -32,12 +32,6 @@
 
     (.write w nl-terminated-ms)
     (.flush w)))
-
-(defn read-line
-  "Reads a line from the socket."
-  [^Socket sock]
-  (let [^BufferedReader r (io/reader sock)]
-    (.readLine r)))
 
 ; FIXME: Expect connect-f to close sock when done like with server, or use with-open?
 (defn connect-to
